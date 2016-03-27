@@ -31,7 +31,7 @@ void Renderer::_InitInstance()
 {
 	VkApplicationInfo application_info {};
 	application_info.sType							= VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	application_info.apiVersion						= VK_MAKE_VERSION( 1, 0, 3 );
+	application_info.apiVersion						= VK_MAKE_VERSION( 1, 0, 2 );			// 1.0.2 should work on all vulkan enabled drivers.
 	application_info.applicationVersion				= VK_MAKE_VERSION( 0, 1, 0 );
 	application_info.pApplicationName				= "Vulkan tutorial 3";
 
