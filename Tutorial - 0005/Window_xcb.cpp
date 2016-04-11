@@ -99,6 +99,17 @@ void Window::_DeInitOSWindow()
 
 void Window::_UpdateOSWindow()
 {
+	auto event = xcb_poll_for_event( _xcb_connection );
+	switch( event->response_type & ~0x80 )
+	case XCB_CLIENT_MESSAGE:
+		if( ( (xcb_client_message_event_t*)event )->data.data32[ 0 ] == _xcb_atom_window_reply->atom ) {
+			Close();
+		}
+		break;
+	default:
+		break;
+	}
+	free( event );
 }
 
 #endif
