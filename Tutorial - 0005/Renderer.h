@@ -3,6 +3,7 @@
 #include "Platform.h"
 
 #include <vector>
+#include <string>
 
 class Window;
 

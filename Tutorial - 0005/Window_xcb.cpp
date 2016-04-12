@@ -1,10 +1,11 @@
 
 #include "BUILD_OPTIONS.h"
 #include "Platform.h"
-
 #include "Window.h"
+#include "Shared.h"
 
 #include <assert.h>
+#include <iostream>
 
 #if VK_USE_PLATFORM_XCB_KHR
 
@@ -80,14 +81,16 @@ void Window::_InitOSWindow()
 	}
 }
 
+/*
 void Window::_InitOSSurface()
 {
 	VkXcbSurfaceCreateInfoKHR create_info {};
 	create_info.sType			= VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
 	create_info.connection		= _xcb_connection;
 	create_info.window			= _xcb_window;
-	ErrCheck( vkCreateXcbSurfaceKHR( _renderer->_instance, &create_info, nullptr, &_surface ) );
+    ErrCheck( vkCreateXcbSurfaceKHR( _renderer->_instance, &create_info, nullptr, &_surface ) );
 }
+*/
 
 void Window::_DeInitOSWindow()
 {
