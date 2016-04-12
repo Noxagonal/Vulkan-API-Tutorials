@@ -131,8 +131,13 @@ int main()
 	vkCreateDevice( GPUs[ 0 ], &device_create_info, nullptr, &device );
 
 	// create window
+	int width		= 800;
+	int height		= 600;
 	glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API );		// This tells GLFW to not create an OpenGL context with the window
-	auto window = glfwCreateWindow( 800, 600, application_info.pApplicationName, nullptr, nullptr );
+	auto window = glfwCreateWindow( width, height, application_info.pApplicationName, nullptr, nullptr );
+
+	// make sure we indeed get the surface size we want.
+	glfwGetFramebufferSize( window, &width, &height );
 
 	// Create window surface, looks a lot like a Vulkan function ( and not GLFW function )
 	// This is a one function solution for all operating systems. No need to hassle with the OS specifics.
