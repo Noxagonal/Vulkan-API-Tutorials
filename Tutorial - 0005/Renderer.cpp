@@ -9,7 +9,6 @@
 #include <cstdlib>
 #include <assert.h>
 #include <vector>
-
 #include <iostream>
 #include <sstream>
 
