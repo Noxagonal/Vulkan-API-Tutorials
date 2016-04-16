@@ -74,11 +74,11 @@ void Window::_InitOSWindow()
 		XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y, coords );
 	xcb_flush( _xcb_connection );
 
-	xcb_generic_event_t *e;
+	/*xcb_generic_event_t *e;
 	while( ( e = xcb_wait_for_event( _xcb_connection ) ) ) {
 		if( ( e->response_type & ~0x80 ) == XCB_EXPOSE )
 			break;
-	}
+	}*/
 }
 
 /*
@@ -103,16 +103,18 @@ void Window::_DeInitOSWindow()
 void Window::_UpdateOSWindow()
 {
 	auto event = xcb_poll_for_event( _xcb_connection );
-	switch( event->response_type & ~0x80 )
-	case XCB_CLIENT_MESSAGE:
-		if( ( (xcb_client_message_event_t*)event )->data.data32[ 0 ] == _xcb_atom_window_reply->atom ) {
-			Close();
+	if( event != NULL ) {
+		switch( event->response_type & ~0x80 ) {
+		case XCB_CLIENT_MESSAGE:
+			if( ( (xcb_client_message_event_t*)event )->data.data32[ 0 ] == _xcb_atom_window_reply->atom ) {
+				Close();
+			}
+			break;
+		default:
+			break;
 		}
-		break;
-	default:
-		break;
+		free( event );
 	}
-	free( event );
 }
 
 #endif
