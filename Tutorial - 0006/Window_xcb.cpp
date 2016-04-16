@@ -94,7 +94,13 @@ void Window::_DeInitOSWindow()
 void Window::_UpdateOSWindow()
 {
 	auto event = xcb_poll_for_event( _xcb_connection );
-	switch( event->response_type & ~0x80 )
+
+    // if there is no event, event will be NULL
+    // need to check for event == NULL to prevent segfault
+    if(!event)
+        return;
+
+    switch( event->response_type & ~0x80 ) {
 	case XCB_CLIENT_MESSAGE:
 		if( ( (xcb_client_message_event_t*)event )->data.data32[ 0 ] == _xcb_atom_window_reply->atom ) {
 			Close();
@@ -112,7 +118,7 @@ void Window::_InitOSSurface()
 	create_info.sType			= VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
 	create_info.connection		= _xcb_connection;
 	create_info.window			= _xcb_window;
-	ErrCheck( vkCreateXcbSurfaceKHR( _renderer->_instance, &create_info, nullptr, &_surface ) );
+    ErrorCheck( vkCreateXcbSurfaceKHR( _renderer->GetVulkanInstance(), &create_info, nullptr, &_surface ) );
 }
 
 #endif
