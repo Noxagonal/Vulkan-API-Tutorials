@@ -14,6 +14,7 @@
 
 Renderer::Renderer()
 {
+	_SetupLayersAndExtensions();
 	_SetupDebug();
 	_InitInstance();
 	_InitDebug();
@@ -31,7 +32,7 @@ Renderer::~Renderer()
 
 Window * Renderer::OpenWindow( uint32_t size_x, uint32_t size_y, std::string name )
 {
-	_window		= new Window( size_x, size_y, name );
+	_window		= new Window( this, size_x, size_y, name );
 	return		_window;
 }
 
@@ -43,13 +44,49 @@ bool Renderer::Run()
 	return true;
 }
 
+const VkInstance Renderer::GetVulkanInstance() const
+{
+	return _instance;
+}
+
+const VkPhysicalDevice Renderer::GetVulkanPhysicalDevice() const
+{
+	return _gpu;
+}
+
+const VkDevice Renderer::GetVulkanDevice() const
+{
+	return _device;
+}
+
+const VkQueue Renderer::GetVulkanQueue() const
+{
+	return _queue;
+}
+
+const uint32_t Renderer::GetVulkanGraphicsQueueFamilyIndex() const
+{
+	return _graphics_family_index;
+}
+
+const VkPhysicalDeviceProperties & Renderer::GetVulkanPhysicalDeviceProperties() const
+{
+	return _gpu_properties;
+}
+
+void Renderer::_SetupLayersAndExtensions()
+{
+	_instance_extensions.push_back( VK_KHR_SURFACE_EXTENSION_NAME );
+	_instance_extensions.push_back( PLATFORM_SURFACE_EXTENSION_NAME );
+}
+
 void Renderer::_InitInstance()
 {
 	VkApplicationInfo application_info {};
 	application_info.sType							= VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	application_info.apiVersion						= VK_MAKE_VERSION( 1, 0, 2 );			// 1.0.2 should work on all vulkan enabled drivers.
-	application_info.applicationVersion				= VK_MAKE_VERSION( 0, 0, 5 );
-	application_info.pApplicationName				= "Vulkan tutorial 5";
+	application_info.applicationVersion				= VK_MAKE_VERSION( 0, 1, 0 );
+	application_info.pApplicationName				= "Vulkan API Tutorial Series";
 
 	VkInstanceCreateInfo instance_create_info {};
 	instance_create_info.sType						= VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -58,7 +95,7 @@ void Renderer::_InitInstance()
 	instance_create_info.ppEnabledLayerNames		= _instance_layers.data();
 	instance_create_info.enabledExtensionCount		= _instance_extensions.size();
 	instance_create_info.ppEnabledExtensionNames	= _instance_extensions.data();
-	instance_create_info.pNext						= &debug_callback_create_info;
+	instance_create_info.pNext						= &_debug_callback_create_info;
 
 	ErrorCheck( vkCreateInstance( &instance_create_info, nullptr, &_instance ) );
 }
@@ -171,9 +208,9 @@ VulkanDebugCallback(
 
 void Renderer::_SetupDebug()
 {
-	debug_callback_create_info.sType			= VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
-	debug_callback_create_info.pfnCallback		= VulkanDebugCallback;
-	debug_callback_create_info.flags			=
+	_debug_callback_create_info.sType			= VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
+	_debug_callback_create_info.pfnCallback		= VulkanDebugCallback;
+	_debug_callback_create_info.flags			=
 //		VK_DEBUG_REPORT_INFORMATION_BIT_EXT |
 		VK_DEBUG_REPORT_WARNING_BIT_EXT |
 		VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT |
@@ -217,7 +254,7 @@ void Renderer::_InitDebug()
 		std::exit( -1 );
 	}
 
-	fvkCreateDebugReportCallbackEXT( _instance, &debug_callback_create_info, nullptr, &_debug_report );
+	fvkCreateDebugReportCallbackEXT( _instance, &_debug_callback_create_info, nullptr, &_debug_report );
 
 //	vkCreateDebugReportCallbackEXT( _instance, nullptr, nullptr, nullptr );
 }
