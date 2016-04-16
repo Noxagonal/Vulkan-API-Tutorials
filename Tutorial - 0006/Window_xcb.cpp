@@ -95,12 +95,12 @@ void Window::_UpdateOSWindow()
 {
 	auto event = xcb_poll_for_event( _xcb_connection );
 
-    // if there is no event, event will be NULL
-    // need to check for event == NULL to prevent segfault
-    if(!event)
-        return;
+	// if there is no event, event will be NULL
+	// need to check for event == NULL to prevent segfault
+	if( !event )
+		return;
 
-    switch( event->response_type & ~0x80 ) {
+	switch( event->response_type & ~0x80 ) {
 	case XCB_CLIENT_MESSAGE:
 		if( ( (xcb_client_message_event_t*)event )->data.data32[ 0 ] == _xcb_atom_window_reply->atom ) {
 			Close();
