@@ -76,11 +76,13 @@ void Window::_InitOSWindow()
 		XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y, coords );
 	xcb_flush( _xcb_connection );
 
+	/*
 	xcb_generic_event_t *e;
 	while( ( e = xcb_wait_for_event( _xcb_connection ) ) ) {
 		if( ( e->response_type & ~0x80 ) == XCB_EXPOSE )
 			break;
 	}
+	*/
 }
 
 void Window::_DeInitOSWindow()
