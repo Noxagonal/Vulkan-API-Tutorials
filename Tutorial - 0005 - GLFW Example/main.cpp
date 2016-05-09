@@ -79,7 +79,7 @@ int main()
 	instance_create_info.pApplicationInfo			= &application_info;
 	instance_create_info.enabledLayerCount			= instance_layers.size();
 	instance_create_info.ppEnabledLayerNames		= instance_layers.data();
-	instance_create_info.enabledLayerCount			= instance_extensions.size();
+	instance_create_info.enabledExtensionCount		= instance_extensions.size();
 	instance_create_info.ppEnabledExtensionNames	= instance_extensions.data();
 
 	VkInstance instance								= VK_NULL_HANDLE;
