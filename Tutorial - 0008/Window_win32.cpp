@@ -11,6 +11,10 @@
 
 #if VK_USE_PLATFORM_WIN32_KHR
 
+void AddRequiredPlatformInstanceExtensions( std::vector<const char *> *instance_extensions ){
+	instance_extensions->push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+}
+
 // Microsoft Windows specific versions of window functions
 LRESULT CALLBACK WindowsEventHandler( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {

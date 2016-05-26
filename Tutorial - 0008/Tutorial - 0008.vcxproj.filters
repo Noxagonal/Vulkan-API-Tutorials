@@ -27,6 +27,9 @@
     <ClCompile Include="Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Window_glfw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Window_win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
