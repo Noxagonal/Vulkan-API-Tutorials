@@ -137,6 +137,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shared.cpp" />
     <ClCompile Include="Window.cpp" />
+	<ClCompile Include="Window_glfw.cpp" />
     <ClCompile Include="Window_win32.cpp" />
     <ClCompile Include="Window_xcb.cpp" />
   </ItemGroup>

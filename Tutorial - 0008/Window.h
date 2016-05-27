@@ -49,7 +49,9 @@ private:
 
 	bool								_window_should_run				= true;
 
-#if VK_USE_PLATFORM_WIN32_KHR
+#if VK_USE_PLATFORM_GLFW_KHR
+	GLFWwindow* _glfw_window = nullptr;
+#elif VK_USE_PLATFORM_WIN32_KHR
 	HINSTANCE							_win32_instance					= NULL;
 	HWND								_win32_window					= NULL;
 	std::string							_win32_class_name;
