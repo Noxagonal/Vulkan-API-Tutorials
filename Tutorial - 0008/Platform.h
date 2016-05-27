@@ -9,24 +9,26 @@
 #include <stdint.h>
 #include <vector>
 
-extern void AddRequiredPlatformInstanceExtensions( std::vector<const char *> *instance_extensions );
+void AddRequiredPlatformInstanceExtensions( std::vector<const char *> *instance_extensions );
 
 // GLFW
 #if defined( BUILD_GLFW )
+
 // Define as a build option 
-#define VK_USE_PLATFORM_GLFW_KHR 1
+#define USE_FRAMEWORK_GLFW 1
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-#ifdef _WIN32 // for message box
+// For Windows Message Box
+#if defined( _WIN32 ) 
 #include <windows.h>
 #endif 
 
 // WINDOWS
-#if defined( _WIN32 )
+#elif defined( _WIN32 )
 // this is always defined on windows platform
 
 #define VK_USE_PLATFORM_WIN32_KHR 1
-#include <Windows.h>
+#include <windows.h>
 
 // LINUX ( Via XCB library )
 #elif defined( __linux )

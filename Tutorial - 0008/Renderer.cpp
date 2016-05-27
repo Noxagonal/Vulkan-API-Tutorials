@@ -14,6 +14,13 @@
 
 Renderer::Renderer()
 {
+#if USE_FRAMEWORK_GLFW
+	glfwInit();
+	if ( glfwVulkanSupported() == GLFW_FALSE ){
+		assert( 0 && " GLFW Failed to initialize with Vulkan.");
+		return;
+	}
+#endif
 	_SetupLayersAndExtensions();
 	_SetupDebug();
 	_InitInstance();
@@ -28,6 +35,9 @@ Renderer::~Renderer()
 	_DeInitDevice();
 	_DeInitDebug();
 	_DeInitInstance();
+#if USE_FRAMEWORK_GLFW
+	glfwTerminate();
+#endif
 }
 
 Window * Renderer::OpenWindow( uint32_t size_x, uint32_t size_y, std::string name )

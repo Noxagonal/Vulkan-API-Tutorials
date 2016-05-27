@@ -8,24 +8,7 @@
 #include <assert.h>
 #include <iostream>
 
-#if VK_USE_PLATFORM_GLFW_KHR
-
-void AddRequiredPlatformInstanceExtensions( std::vector<const char *> *instance_extensions ){
-	if ( glfwInit() == GLFW_FALSE ){
-		assert( 0 && "GLFW failed to initialize." );
-		return;
-	}
-	if ( glfwVulkanSupported() == GLFW_FALSE ) {
-		glfwTerminate();
-		assert ( 0 && "GLFW reported Vulkan is not supported." );
-		return;
-	}
-    uint32_t instance_extension_count = 0;
-	const char ** instance_extensions_buffer = glfwGetRequiredInstanceExtensions( &instance_extension_count );
-	for ( uint32_t i=0; i < instance_extension_count; i++ ){
-		instance_extensions->push_back( instance_extensions_buffer[i] );
-	}
-}
+#if USE_FRAMEWORK_GLFW
 
 void Window::_InitOSWindow()
 {	
@@ -68,4 +51,4 @@ void Window::_InitOSSurface()
 	}
 }
 
-#endif // VK_USE_PLATFORM_GLFW_KHR
+#endif // USE_FRAMEWORK_GLFW

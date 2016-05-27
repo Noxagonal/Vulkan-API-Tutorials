@@ -11,10 +11,6 @@
 
 #if VK_USE_PLATFORM_XCB_KHR
 
-void AddRequiredPlatformInstanceExtensions( std::vector<const char *> *instance_extensions ){
-	    instance_extensions->push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
-}
-
 void Window::_InitOSWindow()
 {
 	// create connection to X11 server
