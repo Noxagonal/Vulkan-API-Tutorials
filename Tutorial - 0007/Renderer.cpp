@@ -211,7 +211,7 @@ VulkanDebugCallback(
 	stream << msg << std::endl;
 	std::cout << stream.str();
 
-#ifdef _WIN32
+#if defined( _WIN32 )
 	if( flags & VK_DEBUG_REPORT_ERROR_BIT_EXT ) {
 		MessageBox( NULL, stream.str().c_str(), "Vulkan Error!", 0 );
 	}
