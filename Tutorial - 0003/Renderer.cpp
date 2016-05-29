@@ -1,3 +1,14 @@
+/* -----------------------------------------------------
+This source code is public domain ( CC0 )
+The code is provided as-is without limitations, requirements and responsibilities.
+Creators and contributors to this source code are provided as a token of appreciation
+and no one associated with this source code can be held responsible for any possible
+damages or losses of any kind.
+
+Original file creator:  Niko Kauppi (Code maintenance)
+Contributors:
+----------------------------------------------------- */
+
 #include "Renderer.h"
 #include "Shared.h"
 
@@ -9,7 +20,7 @@
 #include <sstream>
 
 #ifdef _WIN32
-#include <Windows.h>
+#include <windows.h>
 #endif
 
 Renderer::Renderer()
@@ -116,8 +127,8 @@ void Renderer::_InitDevice()
 	device_create_info.sType					= VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	device_create_info.queueCreateInfoCount		= 1;
 	device_create_info.pQueueCreateInfos		= &device_queue_create_info;
-	device_create_info.enabledLayerCount		= _device_layers.size();
-	device_create_info.ppEnabledLayerNames		= _device_layers.data();
+//	device_create_info.enabledLayerCount		= _device_layers.size();				// depricated
+//	device_create_info.ppEnabledLayerNames		= _device_layers.data();				// depricated
 	device_create_info.enabledExtensionCount	= _device_extensions.size();
 	device_create_info.ppEnabledExtensionNames	= _device_extensions.data();
 
@@ -196,7 +207,7 @@ void Renderer::_SetupDebug()
 	*/
 	_instance_extensions.push_back( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );
 
-	_device_layers.push_back( "VK_LAYER_LUNARG_standard_validation" );
+//	_device_layers.push_back( "VK_LAYER_LUNARG_standard_validation" );				// depricated
 	/*
 //	_device_layers.push_back( "VK_LAYER_LUNARG_threading" );
 	_device_layers.push_back( "VK_LAYER_GOOGLE_threading" );

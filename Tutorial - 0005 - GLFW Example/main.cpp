@@ -1,3 +1,13 @@
+/* -----------------------------------------------------
+This source code is public domain ( CC0 )
+The code is provided as-is without limitations, requirements and responsibilities.
+Creators and contributors to this source code are provided as a token of appreciation
+and no one associated with this source code can be held responsible for any possible
+damages or losses of any kind.
+
+Original file creator:  Niko Kauppi (Code maintenance)
+Contributors:
+----------------------------------------------------- */
 
 /*
 This example is using GLFW for window creation and surfaces Using Vulkan API.
@@ -8,11 +18,6 @@ with the OS specific stuff, this code should run on all OSes without modificatio
 Before running though, you will need to direct your include and library
 directories to your GLFW 3.2 locations in project settings.
 You will need GLFW version 3.2 or newer.
-
-Provided as-is without any quarantee that it'll work
-but I will likely fix any errors reported.
-
-Code licence: CC0
 */
 
 // if you have a non-standard path to vulkan, you need to include the vulkan header before GLFW,
@@ -31,14 +36,14 @@ int main()
 {
 	// regular instance and device layers and extensions
 	std::vector<const char*> instance_layers;
-	std::vector<const char*> device_layers;
+//	std::vector<const char*> device_layers;					// depricated
 	std::vector<const char*> instance_extensions;
 	std::vector<const char*> device_extensions;
 
 	// if using debugging, push back debug layers and extensions
 	instance_layers.push_back( "VK_LAYER_LUNARG_standard_validation" );
 	instance_extensions.push_back( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );
-	device_layers.push_back( "VK_LAYER_LUNARG_standard_validation" );
+//	device_layers.push_back( "VK_LAYER_LUNARG_standard_validation" );			// depricated
 
 	// push back extensions and layers you need
 	// We'll need the swapchain for sure if we want to display anything
@@ -122,8 +127,8 @@ int main()
 	device_create_info.sType						= VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	device_create_info.queueCreateInfoCount			= 1;
 	device_create_info.pQueueCreateInfos			= &queue_create_info;
-	device_create_info.enabledLayerCount			= device_layers.size();
-	device_create_info.ppEnabledLayerNames			= device_layers.data();
+//	device_create_info.enabledLayerCount			= device_layers.size();				// depricated
+//	device_create_info.ppEnabledLayerNames			= device_layers.data();				// depricated
 	device_create_info.enabledLayerCount			= device_extensions.size();
 	device_create_info.ppEnabledExtensionNames		= device_extensions.data();
 

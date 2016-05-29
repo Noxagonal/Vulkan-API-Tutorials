@@ -1,3 +1,15 @@
+/* -----------------------------------------------------
+This source code is public domain ( CC0 )
+The code is provided as-is without limitations, requirements and responsibilities.
+Creators and contributors to this source code are provided as a token of appreciation
+and no one associated with this source code can be held responsible for any possible
+damages or losses of any kind.
+
+Original file creator:  Niko Kauppi (Code maintenance)
+Contributors:
+Teagan Chouinard (GLFW)
+----------------------------------------------------- */
+
 #pragma once
 
 #include "Platform.h"
@@ -49,7 +61,9 @@ private:
 
 	bool								_window_should_run				= true;
 
-#if VK_USE_PLATFORM_WIN32_KHR
+#if USE_FRAMEWORK_GLFW
+	GLFWwindow						*	_glfw_window					= nullptr;
+#elif VK_USE_PLATFORM_WIN32_KHR
 	HINSTANCE							_win32_instance					= NULL;
 	HWND								_win32_window					= NULL;
 	std::string							_win32_class_name;
