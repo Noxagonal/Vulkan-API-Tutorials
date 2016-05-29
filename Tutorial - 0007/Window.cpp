@@ -85,8 +85,19 @@ void Window::_InitSurface()
 
 void Window::_InitSwapchain()
 {
-	if( _swapchain_image_count > _surface_capabilities.maxImageCount ) _swapchain_image_count = _surface_capabilities.maxImageCount;
+	// This code is old and the fixed one is below
+	// if( _swapchain_image_count > _surface_capabilities.maxImageCount ) _swapchain_image_count = _surface_capabilities.maxImageCount;
+	// if( _swapchain_image_count < _surface_capabilities.minImageCount + 1 ) _swapchain_image_count = _surface_capabilities.minImageCount + 1;
+
+	// The code above will work just fine in our tutorials and likely on every possible implementation of vulkan as well
+	// so this change isn't that important. Just to be absolutely sure we don't go over or below the given limits we should check this a
+	// little bit different though. maxImageCount can actually be zero in which case the amount of swapchain images do not have an
+	// upper limit other than available memory. It's also possible that the swapchain image amount is locked to a certain
+	// value on certain systems. The code below takes into consideration both of these possibilities.
 	if( _swapchain_image_count < _surface_capabilities.minImageCount + 1 ) _swapchain_image_count = _surface_capabilities.minImageCount + 1;
+	if( _surface_capabilities.maxImageCount > 0 ) {
+		if( _swapchain_image_count > _surface_capabilities.maxImageCount ) _swapchain_image_count = _surface_capabilities.maxImageCount;
+	}
 
 	VkPresentModeKHR present_mode = VK_PRESENT_MODE_FIFO_KHR;
 	{

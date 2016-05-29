@@ -92,9 +92,9 @@ void Window::_DeInitSurface()
 
 void Window::_InitSwapchain()
 {
-//	This code is old and the fixed one is below
-//	if( _swapchain_image_count > _surface_capabilities.maxImageCount ) _swapchain_image_count = _surface_capabilities.maxImageCount;
-//	if( _swapchain_image_count < _surface_capabilities.minImageCount + 1 ) _swapchain_image_count = _surface_capabilities.minImageCount + 1;
+	// This code is old and the fixed one is below
+	// if( _swapchain_image_count > _surface_capabilities.maxImageCount ) _swapchain_image_count = _surface_capabilities.maxImageCount;
+	// if( _swapchain_image_count < _surface_capabilities.minImageCount + 1 ) _swapchain_image_count = _surface_capabilities.minImageCount + 1;
 
 	// The code above will work just fine in our tutorials and likely on every possible implementation of vulkan as well
 	// so this change isn't that important. Just to be absolutely sure we don't go over or below the given limits we should check this a
