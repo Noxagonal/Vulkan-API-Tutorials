@@ -26,10 +26,12 @@ Window::Window( Renderer * renderer, uint32_t size_x, uint32_t size_y, std::stri
 	_InitSurface();
 	_InitSwapchain();
 	_InitSwapchainImages();
+	_InitDepthStencilImage();
 }
 
 Window::~Window()
 {
+	_DeInitDepthStencilImage();
 	_DeInitSwapchainImages();
 	_DeInitSwapchain();
 	_DeInitSurface();
@@ -178,4 +180,92 @@ void Window::_DeInitSwapchainImages()
 	for( auto view : _swapchain_image_views ) {
 		vkDestroyImageView( _renderer->GetVulkanDevice(), view, nullptr );
 	}
+}
+
+void Window::_InitDepthStencilImage()
+{
+	{
+		std::vector<VkFormat> try_formats {
+			VK_FORMAT_D32_SFLOAT_S8_UINT,
+			VK_FORMAT_D24_UNORM_S8_UINT,
+			VK_FORMAT_D16_UNORM_S8_UINT,
+			VK_FORMAT_D32_SFLOAT,
+			VK_FORMAT_D16_UNORM
+		};
+		for( auto f : try_formats ) {
+			VkFormatProperties format_properties {};
+			vkGetPhysicalDeviceFormatProperties( _renderer->GetVulkanPhysicalDevice(), f, &format_properties );
+			if( format_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT ) {
+				_depth_stencil_format = f;
+				break;
+			}
+		}
+		if( _depth_stencil_format == VK_FORMAT_UNDEFINED ) {
+			assert( 0 && "Depth stencil format not selected." );
+			std::exit( -1 );
+		}
+		if( ( _depth_stencil_format == VK_FORMAT_D32_SFLOAT_S8_UINT ) ||
+			( _depth_stencil_format == VK_FORMAT_D24_UNORM_S8_UINT ) ||
+			( _depth_stencil_format == VK_FORMAT_D16_UNORM_S8_UINT ) ||
+			( _depth_stencil_format == VK_FORMAT_S8_UINT ) ) {
+			_stencil_available				= true;
+		}
+	}
+
+	VkImageCreateInfo image_create_info {};
+	image_create_info.sType					= VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	image_create_info.flags					= 0;
+	image_create_info.imageType				= VK_IMAGE_TYPE_2D;
+	image_create_info.format				= _depth_stencil_format;
+	image_create_info.extent.width			= _surface_size_x;
+	image_create_info.extent.height			= _surface_size_y;
+	image_create_info.extent.depth			= 1;
+	image_create_info.mipLevels				= 1;
+	image_create_info.arrayLayers			= 1;
+	image_create_info.samples				= VK_SAMPLE_COUNT_1_BIT;
+	image_create_info.tiling				= VK_IMAGE_TILING_OPTIMAL;
+	image_create_info.usage					= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+	image_create_info.sharingMode			= VK_SHARING_MODE_EXCLUSIVE;
+	image_create_info.queueFamilyIndexCount	= VK_QUEUE_FAMILY_IGNORED;
+	image_create_info.pQueueFamilyIndices	= nullptr;
+	image_create_info.initialLayout			= VK_IMAGE_LAYOUT_UNDEFINED;
+
+	vkCreateImage( _renderer->GetVulkanDevice(), &image_create_info, nullptr, &_depth_stencil_image );
+
+	VkMemoryRequirements image_memory_requirements {};
+	vkGetImageMemoryRequirements( _renderer->GetVulkanDevice(), _depth_stencil_image, &image_memory_requirements );
+
+	uint32_t memory_index					= FindMemoryTypeIndex( &_renderer->GetVulkanPhysicalDeviceMemoryProperties(), &image_memory_requirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT );
+
+	VkMemoryAllocateInfo memory_allocate_info {};
+	memory_allocate_info.sType				= VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	memory_allocate_info.allocationSize		= image_memory_requirements.size;
+	memory_allocate_info.memoryTypeIndex	= memory_index;
+
+	vkAllocateMemory( _renderer->GetVulkanDevice(), &memory_allocate_info, nullptr, &_depth_stencil_image_memory );
+	vkBindImageMemory( _renderer->GetVulkanDevice(), _depth_stencil_image, _depth_stencil_image_memory, 0 );
+
+	VkImageViewCreateInfo image_view_create_info {};
+	image_view_create_info.sType				= VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	image_view_create_info.image				= _depth_stencil_image;
+	image_view_create_info.viewType				= VK_IMAGE_VIEW_TYPE_2D;
+	image_view_create_info.format				= _depth_stencil_format;
+	image_view_create_info.components.r			= VK_COMPONENT_SWIZZLE_IDENTITY;
+	image_view_create_info.components.g			= VK_COMPONENT_SWIZZLE_IDENTITY;
+	image_view_create_info.components.b			= VK_COMPONENT_SWIZZLE_IDENTITY;
+	image_view_create_info.components.a			= VK_COMPONENT_SWIZZLE_IDENTITY;
+	image_view_create_info.subresourceRange.aspectMask		= VK_IMAGE_ASPECT_DEPTH_BIT | ( _stencil_available ? VK_IMAGE_ASPECT_STENCIL_BIT : 0 );
+	image_view_create_info.subresourceRange.baseMipLevel	= 0;
+	image_view_create_info.subresourceRange.levelCount		= 1;
+	image_view_create_info.subresourceRange.baseArrayLayer	= 0;
+	image_view_create_info.subresourceRange.layerCount		= 1;
+
+	vkCreateImageView( _renderer->GetVulkanDevice(), &image_view_create_info, nullptr, &_depth_stencil_image_view );
+}
+
+void Window::_DeInitDepthStencilImage()
+{
+	vkDestroyImageView( _renderer->GetVulkanDevice(), _depth_stencil_image_view, nullptr );
+	vkFreeMemory( _renderer->GetVulkanDevice(), _depth_stencil_image_memory, nullptr );
+	vkDestroyImage( _renderer->GetVulkanDevice(), _depth_stencil_image, nullptr );
 }
